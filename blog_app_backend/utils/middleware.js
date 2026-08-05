@@ -2,22 +2,18 @@ const jwt = require('jsonwebtoken')
 const { SECRET } = require('./config')
 
 const tokenExtractor = (req, res, next) => {
-	const authorization = req.get('authorization')
+	const authorization = req.get('Authorization') // Get Authorization header
 	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-		try {
-			req.decodedToken = jwt.verify(authorization.substring(7), SECRET)
-		} catch {
-			return res.status(401).json({ error: 'token invalid' })
-		}
+		req.token = authorization.substring(7) // Extract the token from "Bearer <token>"
 	} else {
-		return res.status(401).json({ error: 'token missing' })
+		req.token = null // No token found
 	}
-	next()
+	next() // Proceed to the next middleware
 }
 
 const userExtractor = (req, res, next) => {
-	if (req.decodedToken) {
-		const decodedToken = jwt.verify(req.token, process.env.SECRET)
+	if (req.token) {
+		const decodedToken = jwt.verify(req.token, SECRET)
 		if (!decodedToken.id) {
 			req.user = null
 		} else {

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { SECRET } = require('../util/config')
+const { SECRET } = require('./config')
 
 const tokenExtractor = (req, res, next) => {
 	const authorization = req.get('authorization')
@@ -48,6 +48,8 @@ const unknownEndpoint = (req, res) => {
 }
 
 module.exports = {
+	tokenExtractor,
+	userExtractor,
 	errorHandler,
 	unknownEndpoint,
 }

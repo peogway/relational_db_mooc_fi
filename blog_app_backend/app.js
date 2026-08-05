@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const middleware = require('./util/middleware')
+const middleware = require('./utils/middleware')
 
 const testsRouter = require('./controllers/tests')
 

@@ -5,15 +5,6 @@ const { Op } = require('sequelize')
 const { sequelize } = require('../utils/db')
 
 router.get('/', async (req, res) => {
-	if (!req.user) {
-		return res.status(401).json({ error: 'Unauthorized' })
-	}
-
-	const user = await User.findByPk(req.user.id)
-	if (!user) {
-		return res.status(404).json({ error: 'User not found' })
-	}
-
 	const authors = await Blog.findAll({
 		attributes: [
 			'author',

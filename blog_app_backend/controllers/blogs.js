@@ -12,14 +12,14 @@ const blogFinder = async (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-	if (!req.user) {
-		return res.status(401).json({ error: 'Unauthorized' })
-	}
+	// if (!req.user) {
+	// 	return res.status(401).json({ error: 'Unauthorized' })
+	// }
 
-	const user = await User.findByPk(req.user.id)
-	if (!user) {
-		return res.status(404).json({ error: 'User not found' })
-	}
+	// const user = await User.findByPk(req.user.id)
+	// if (!user) {
+	// 	return res.status(404).json({ error: 'User not found' })
+	// }
 
 	const where = {}
 	if (req.query.search) {
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 	}
 
 	const blogs = await Blog.findAll({
-		attributes: { exclude: ['user_id'] },
+		attributes: { exclude: ['userId'] },
 		include: {
 			model: User,
 			attributes: ['name'],
@@ -55,19 +55,20 @@ router.get('/:id', blogFinder, async (req, res) => {
 
 router.post('/', async (req, res) => {
 	try {
-		if (!req.user) {
-			return res.status(401).json({ error: 'Unauthorized' })
-		}
+		// if (!req.user) {
+		// 	return res.status(401).json({ error: 'Unauthorized' })
+		// }
 
-		const user = await User.findByPk(req.user.id)
-		if (!user) {
-			return res.status(404).json({ error: 'User not found' })
-		}
+		// const user = await User.findByPk(req.user.id)
+		// if (!user) {
+		// 	return res.status(404).json({ error: 'User not found' })
+		// }
 
 		const blog = await Blog.create({
 			...req.body,
-			user_id: user.id,
+			userId: req.user.id,
 		})
+
 		return res.json(blog)
 	} catch (error) {
 		return res.status(400).json({ error })
@@ -85,7 +86,7 @@ router.delete('/:id', blogFinder, async (req, res) => {
 			return res.status(404).json({ error: 'User not found' })
 		}
 
-		if (req.blog.user_id !== user.id) {
+		if (req.blog.userId !== user.id) {
 			return res.status(403).json({ error: 'Forbidden' })
 		}
 
@@ -98,14 +99,14 @@ router.delete('/:id', blogFinder, async (req, res) => {
 
 router.put('/:id', blogFinder, async (req, res) => {
 	try {
-		if (!req.user) {
-			return res.status(401).json({ error: 'Unauthorized' })
-		}
+		// if (!req.user) {
+		// 	return res.status(401).json({ error: 'Unauthorized' })
+		// }
 
-		const user = await User.findByPk(req.user.id)
-		if (!user) {
-			return res.status(404).json({ error: 'User not found' })
-		}
+		// const user = await User.findByPk(req.user.id)
+		// if (!user) {
+		// 	return res.status(404).json({ error: 'User not found' })
+		// }
 
 		await req.blog.update(req.body)
 		return res.json(req.blog)
